@@ -36,5 +36,6 @@ public enum GameScreens
     SettingsScreen,
     QuitGameScreen,
     ProfileScreen,
-    LoadingScreen
+    LoadingScreen,
+    GarageScreen
 }
