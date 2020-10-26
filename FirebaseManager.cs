@@ -13,8 +13,12 @@ public class User
 {
     public string username;
     public int levelNumber;
+    public int coins;
     public string email;
     public string password;
+    public string vehicle2;
+    public string vehicle3;
+    public string vehicle4;
 }
 
 public class FirebaseManager : MonoBehaviour
@@ -34,11 +38,11 @@ public class FirebaseManager : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             return;
         }
         _instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
         {
@@ -56,31 +60,31 @@ public class FirebaseManager : MonoBehaviour
     private void InitializeFirebase()
     {
         FirebaseAnalytics.SetAnalyticsCollectionEnabled(true);
-        FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://traffica-34c81.firebaseio.com/");
+        FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://drive-and-learn.firebaseio.com/");
 
         auth = FirebaseAuth.DefaultInstance;
         database = FirebaseDatabase.DefaultInstance.RootReference;
         Debug.Log("Initialized Firebase Successfully");
     }
 
-    public void LoginUser(string _email, string _password, Action<LoginResult> onCompleted)
+    public void LoginUser(string email, string password, Action<LoginResult> onCompleted)
     {
-        StartCoroutine(LoginUserCouroutine(_email, _password, onCompleted));
+        StartCoroutine(LoginUserCouroutine(email, password, onCompleted));
     }
 
-    public void RegisterUser(User _user, Action<RegisterResult> onCompleted)
+    public void RegisterUser(User user, Action<RegisterResult> onCompleted)
     {
-        StartCoroutine(RegisterUserCouroutine(_user, onCompleted));
+        StartCoroutine(RegisterUserCouroutine(user, onCompleted));
     }
 
-    public void WriteUser(User _user, Action<RegisterResult> onCompleted)
+    public void WriteUser(User user, Action<RegisterResult> onCompleted)
     {
-        StartCoroutine(WriteUserCouroutine(_user, onCompleted));
+        StartCoroutine(WriteUserCouroutine(user, onCompleted));
     }
 
-    public void GetUser(string _userId, Action<User, ReadUserResult> onCompleted)
+    public void GetUser(string userId, Action<User, ReadUserResult> onCompleted)
     {
-        StartCoroutine(ReadUserCoroutine(_userId, onCompleted));
+        StartCoroutine(ReadUserCoroutine(userId, onCompleted));
     }
 
     public void GetUsers(Action<List<User>, GetUsersResult> onCompleted)
@@ -88,9 +92,19 @@ public class FirebaseManager : MonoBehaviour
         StartCoroutine(GetUsersCoroutine(onCompleted));
     }
 
-    public void UpdateLevelNumber(int _levelNumber, Action<UpdateData> onCompleted)
+    public void UpdateLevelNumber(int levelNumber, Action<UpdateData> onCompleted)
     {
-        StartCoroutine(UpdateLevelCouroutine(_levelNumber, onCompleted));
+        StartCoroutine(UpdateLevelCouroutine(levelNumber, onCompleted));
+    }
+
+    public void UpdateCoins(int coins, Action<UpdateData> onCompleted)
+    {
+        StartCoroutine(UpdateCoinsCouroutine(coins, onCompleted));
+    }
+
+    public void UpdateVehicleState(string vehicleName, Action<UpdateData, string> onCompleted)
+    {
+        StartCoroutine(UpdateVehicleStateCouroutine(vehicleName, onCompleted));
     }
 
 
@@ -179,8 +193,12 @@ public class FirebaseManager : MonoBehaviour
             {
                 username = firebaseuser["username"].ToString(),
                 levelNumber = Convert.ToInt32(firebaseuser["levelNumber"].ToString()),
+                coins = Convert.ToInt32(firebaseuser["coins"].ToString()),
                 email = firebaseuser["email"].ToString(),
-                password = firebaseuser["password"].ToString()
+                password = firebaseuser["password"].ToString(),
+                vehicle2 = firebaseuser["vehicle2"].ToString(),
+                vehicle3 = firebaseuser["vehicle3"].ToString(),
+                vehicle4 = firebaseuser["vehicle4"].ToString()
             };
         }
 
@@ -245,6 +263,36 @@ public class FirebaseManager : MonoBehaviour
         else
         {
             onCompleted?.Invoke(UpdateData.Successfull);
+        }
+    }
+
+    private IEnumerator UpdateCoinsCouroutine(int coins, Action<UpdateData> onCompleted)
+    {
+        var task = database.Child(usersTableName).Child(auth.CurrentUser.UserId).Child("coins").SetValueAsync(coins);
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        if (task.IsFaulted)
+        {
+            onCompleted?.Invoke(UpdateData.Error);
+        }
+        else
+        {
+            onCompleted?.Invoke(UpdateData.Successfull);
+        }
+    }
+
+    private IEnumerator UpdateVehicleStateCouroutine(string vehicleName, Action<UpdateData, string> onCompleted)
+    {
+        var task = database.Child(usersTableName).Child(auth.CurrentUser.UserId).Child(vehicleName).SetValueAsync(State.Unlocked.ToString());
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        if (task.IsFaulted)
+        {
+            onCompleted?.Invoke(UpdateData.Error, vehicleName);
+        }
+        else
+        {
+            onCompleted?.Invoke(UpdateData.Successfull, vehicleName);
         }
     }
 }
