@@ -28,6 +28,7 @@ public class Fps : MonoBehaviour {
 	{
         //GUI.contentColor = Color.red;
         //GUI.Label (new Rect (100, 100, 200, 200), label);
+		//for desiging
         FPSText.text = label;
 	}
 }
