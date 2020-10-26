@@ -14,7 +14,7 @@ public class LeaderboardElement : MonoBehaviour
             rankImage.SetActive(true);
         else
             rankImage.SetActive(false);
-
+//comments
         rankText.text = _rank.ToString();
         userNameText.text = _userName.ToUpper();
         levelNumberText.text = _levelNumber.ToString();
