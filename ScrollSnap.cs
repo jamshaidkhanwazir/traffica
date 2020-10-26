@@ -73,6 +73,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 		SetContentSize(LayoutElementCount() - 1);
 		if(cellIndex == CalculateMaxIndex()) {
 			cellIndex -= 1;
+		//console.log(cellIndex)
 		}
 	}
 	
