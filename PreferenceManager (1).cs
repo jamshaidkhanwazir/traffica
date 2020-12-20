@@ -30,6 +30,13 @@ public static class PreferenceManager
         set { PlayerPrefs.SetInt("COINS", value); }
     }
 
+    public static int LevelSelected
+    {
+        get { return PlayerPrefs.GetInt("LEVEL_SELECTED", 1); }
+
+        set { PlayerPrefs.SetInt("LEVEL_SELECTED", value); }
+    }
+
     public static string VehicleSelected
     {
         get { return PlayerPrefs.GetString("VEHICLE_SELECTED", Vehicle.Vehicle1.ToString()); }
@@ -48,14 +55,42 @@ public static class PreferenceManager
     {
         get { return PlayerPrefs.GetString("VEHICLE_3", State.Locked.ToString()); }
 
-        set { PlayerPrefs.SetString("VEHICLE_2", value); }
+        set { PlayerPrefs.SetString("VEHICLE_3", value); }
     }
 
     public static string Vehicle4
     {
         get { return PlayerPrefs.GetString("VEHICLE_4", State.Locked.ToString()); }
 
-        set { PlayerPrefs.SetString("VEHICLE_2", value); }
+        set { PlayerPrefs.SetString("VEHICLE_4", value); }
+    }
+
+    public static int Vehicle1Color
+    {
+        get { return PlayerPrefs.GetInt("VEHICLE_1_COLOR", 1); }
+
+        set { PlayerPrefs.SetInt("VEHICLE_1_COLOR", value); }
+    }
+
+    public static int Vehicle2Color
+    {
+        get { return PlayerPrefs.GetInt("VEHICLE_2_COLOR", 1); }
+
+        set { PlayerPrefs.SetInt("VEHICLE_2_COLOR", value); }
+    }
+
+    public static int Vehicle3Color
+    {
+        get { return PlayerPrefs.GetInt("VEHICLE_3_COLOR", 1); }
+
+        set { PlayerPrefs.SetInt("VEHICLE_3_COLOR", value); }
+    }
+
+    public static int Vehicle4Color
+    {
+        get { return PlayerPrefs.GetInt("VEHICLE_4_COLOR", 1); }
+
+        set { PlayerPrefs.SetInt("VEHICLE_4_COLOR", value); }
     }
 
     public static float Music
@@ -74,7 +109,7 @@ public static class PreferenceManager
 
     public static string Controls
     {
-        get { return PlayerPrefs.GetString("CONTROLS",ControlType.Buttons.ToString()); }
+        get { return PlayerPrefs.GetString("CONTROLS", ControlType.Buttons.ToString()); }
 
         set { PlayerPrefs.SetString("CONTROLS", value); }
     }
