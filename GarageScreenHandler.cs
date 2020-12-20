@@ -3,8 +3,10 @@ using UnityEngine.UI;
 
 public class GarageScreenHandler : MonoBehaviour
 {
+    [Header("HUD")]
+    public Text coinsText;
+
     [Header("Garage Screen")]
-    private string vehicleNumber;
     public Animator vehicle1SpecsAnimator;
     public Animator vehicle2SpecsAnimator;
     public Animator vehicle3SpecsAnimator;
@@ -12,6 +14,13 @@ public class GarageScreenHandler : MonoBehaviour
     public GameObject vehicleLocked;
     public Button nextButton;
     public Button previousButton;
+    private string vehicleNumber;
+
+    public Color color1;
+    public Color color2;
+    public Color color3;
+    public Color color4;
+    public Color color5;
 
     [Header("Message")]
     public GameObject messagePanel;
@@ -22,8 +31,14 @@ public class GarageScreenHandler : MonoBehaviour
 
     private void OnEnable()
     {
+        SetHUD();
         vehicleNumber = PreferenceManager.VehicleSelected;
         DisplayVehicle(null);
+    }
+
+    public void SetHUD()
+    {
+        coinsText.text = PreferenceManager.Coins.ToString();
     }
 
     #region Garage Screen
@@ -39,39 +54,68 @@ public class GarageScreenHandler : MonoBehaviour
         if (vehicleNumber == Vehicle.Vehicle2.ToString() && PreferenceManager.Coins >= 4500)
         {
             PreferenceManager.Coins -= 4500;
-            FirebaseManager.Instance.UpdateCoins(PreferenceManager.Coins, OnUpdateCoinsComplete);
+            if (!string.IsNullOrEmpty(PreferenceManager.Username))
+                FirebaseManager.Instance.UpdateCoins(PreferenceManager.Coins, OnUpdateCoinsComplete);
+            SetHUD();
 
             PreferenceManager.Vehicle2 = State.Unlocked.ToString();
-            FirebaseManager.Instance.UpdateVehicleState("vehicle2", OnUpdateVehicleStateComplete);
+            if (!string.IsNullOrEmpty(PreferenceManager.Username))
+                FirebaseManager.Instance.UpdateVehicleState("vehicle2", OnUpdateVehicleStateComplete);
 
             vehicleLocked.SetActive(false);
             DisplaySuccessMessage("Congratulations! You have bought Civic");
+
+            GameObject[] allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+            Debug.Log(allGameObjects.Length);
+            foreach (GameObject gameObject in allGameObjects)
+            {
+                if (gameObject.tag == "IncrementButton")
+                {
+                    Debug.Log(gameObject.name);
+                    gameObject.GetComponent<UpgradationHandler>().enabled = true;
+                }
+            }
+                
         }
         else if (vehicleNumber == Vehicle.Vehicle3.ToString() && PreferenceManager.Coins >= 5500)
         {
             vehicleLocked.SetActive(false);
 
             PreferenceManager.Coins -= 5500;
-            FirebaseManager.Instance.UpdateCoins(PreferenceManager.Coins, OnUpdateCoinsComplete);
+            if (!string.IsNullOrEmpty(PreferenceManager.Username))
+                FirebaseManager.Instance.UpdateCoins(PreferenceManager.Coins, OnUpdateCoinsComplete);
+            SetHUD();
 
             PreferenceManager.Vehicle3 = State.Unlocked.ToString();
-            FirebaseManager.Instance.UpdateVehicleState("vehicle3", OnUpdateVehicleStateComplete);
+            if (!string.IsNullOrEmpty(PreferenceManager.Username))
+                FirebaseManager.Instance.UpdateVehicleState("vehicle3", OnUpdateVehicleStateComplete);
 
             vehicleLocked.SetActive(false);
             DisplaySuccessMessage("Congratulations! You have bought Lancer");
+
+            GameObject[] incrementsButtons = GameObject.FindGameObjectsWithTag("IncrementButton");
+            foreach (GameObject incremenButton in incrementsButtons)
+                incremenButton.GetComponent<UpgradationHandler>().enabled = true;
         }
         else if (vehicleNumber == Vehicle.Vehicle4.ToString() && PreferenceManager.Coins >= 8000)
         {
             vehicleLocked.SetActive(false);
 
             PreferenceManager.Coins -= 8000;
-            FirebaseManager.Instance.UpdateCoins(PreferenceManager.Coins, OnUpdateCoinsComplete);
+            if (!string.IsNullOrEmpty(PreferenceManager.Username))
+                FirebaseManager.Instance.UpdateCoins(PreferenceManager.Coins, OnUpdateCoinsComplete);
+            SetHUD();
 
             PreferenceManager.Vehicle4 = State.Unlocked.ToString();
-            FirebaseManager.Instance.UpdateVehicleState("vehicle4", OnUpdateVehicleStateComplete);
+            if (!string.IsNullOrEmpty(PreferenceManager.Username))
+                FirebaseManager.Instance.UpdateVehicleState("vehicle4", OnUpdateVehicleStateComplete);
 
             vehicleLocked.SetActive(false);
             DisplaySuccessMessage("Congratulations! You have bought Lamborghini");
+
+            GameObject[] incrementsButtons = GameObject.FindGameObjectsWithTag("IncrementButton");
+            foreach (GameObject incremenButton in incrementsButtons)
+                incremenButton.GetComponent<UpgradationHandler>().enabled = true;
         }
         else
         {
@@ -208,6 +252,7 @@ public class GarageScreenHandler : MonoBehaviour
             previousButton.interactable = false;
             nextButton.interactable = true;
 
+            DisplayColor(PreferenceManager.Vehicle1Color);
             GarageManager.Instance.DisplayVehicle(Vehicle.Vehicle1.ToString());
         }
         else if (vehicleNumber == Vehicle.Vehicle2.ToString())
@@ -222,6 +267,7 @@ public class GarageScreenHandler : MonoBehaviour
             previousButton.interactable = true;
             nextButton.interactable = true;
 
+            DisplayColor(PreferenceManager.Vehicle2Color);
             GarageManager.Instance.DisplayVehicle(Vehicle.Vehicle2.ToString());
         }
         else if (vehicleNumber == Vehicle.Vehicle3.ToString())
@@ -236,6 +282,7 @@ public class GarageScreenHandler : MonoBehaviour
             previousButton.interactable = true;
             nextButton.interactable = true;
 
+            DisplayColor(PreferenceManager.Vehicle3Color);
             GarageManager.Instance.DisplayVehicle(Vehicle.Vehicle3.ToString());
         }
         else if (vehicleNumber == Vehicle.Vehicle4.ToString())
@@ -248,6 +295,7 @@ public class GarageScreenHandler : MonoBehaviour
             previousButton.interactable = true;
             nextButton.interactable = false;
 
+            DisplayColor(PreferenceManager.Vehicle4Color);
             GarageManager.Instance.DisplayVehicle(Vehicle.Vehicle4.ToString());
         }
     }
@@ -264,6 +312,75 @@ public class GarageScreenHandler : MonoBehaviour
             vehicle4SpecsAnimator.SetTrigger("moveIn");
     }
 
+    public void OnColorButtonClick(int colorNumber)
+    {
+        DisplayColor(colorNumber);
+    }
+
+    private void DisplayColor(int colorNumber)
+    {
+        if (vehicleNumber == Vehicle.Vehicle1.ToString())
+        {
+            PreferenceManager.Vehicle1Color = colorNumber;
+
+            if (colorNumber == 1)
+                GarageManager.Instance.vehicle1.transform.GetChild(0).GetComponent<Renderer>().material.color = color1;
+            else if (colorNumber == 2)
+                GarageManager.Instance.vehicle1.transform.GetChild(0).GetComponent<Renderer>().material.color = color2;
+            else if (colorNumber == 3)
+                GarageManager.Instance.vehicle1.transform.GetChild(0).GetComponent<Renderer>().material.color = color3;
+            else if (colorNumber == 4)
+                GarageManager.Instance.vehicle1.transform.GetChild(0).GetComponent<Renderer>().material.color = color4;
+            else if (colorNumber == 5)
+                GarageManager.Instance.vehicle1.transform.GetChild(0).GetComponent<Renderer>().material.color = color5;
+        }
+        else if (vehicleNumber == Vehicle.Vehicle2.ToString())
+        {
+            PreferenceManager.Vehicle2Color = colorNumber;
+
+            if (colorNumber == 1)
+                GarageManager.Instance.vehicle2.transform.GetChild(0).GetComponent<Renderer>().material.color = color1;
+            else if (colorNumber == 2)
+                GarageManager.Instance.vehicle2.transform.GetChild(0).GetComponent<Renderer>().material.color = color2;
+            else if (colorNumber == 3)
+                GarageManager.Instance.vehicle2.transform.GetChild(0).GetComponent<Renderer>().material.color = color3;
+            else if (colorNumber == 4)
+                GarageManager.Instance.vehicle2.transform.GetChild(0).GetComponent<Renderer>().material.color = color4;
+            else if (colorNumber == 5)
+                GarageManager.Instance.vehicle2.transform.GetChild(0).GetComponent<Renderer>().material.color = color5;
+        }
+        else if (vehicleNumber == Vehicle.Vehicle3.ToString())
+        {
+            PreferenceManager.Vehicle3Color = colorNumber;
+
+            if (colorNumber == 1)
+                GarageManager.Instance.vehicle3.transform.GetChild(0).GetComponent<Renderer>().material.color = color1;
+            else if (colorNumber == 2)
+                GarageManager.Instance.vehicle3.transform.GetChild(0).GetComponent<Renderer>().material.color = color2;
+            else if (colorNumber == 3)
+                GarageManager.Instance.vehicle3.transform.GetChild(0).GetComponent<Renderer>().material.color = color3;
+            else if (colorNumber == 4)
+                GarageManager.Instance.vehicle3.transform.GetChild(0).GetComponent<Renderer>().material.color = color4;
+            else if (colorNumber == 5)
+                GarageManager.Instance.vehicle3.transform.GetChild(0).GetComponent<Renderer>().material.color = color5;
+        }
+        else if (vehicleNumber == Vehicle.Vehicle4.ToString())
+        {
+            PreferenceManager.Vehicle4Color = colorNumber;
+
+            if (colorNumber == 1)
+                GarageManager.Instance.vehicle4.transform.GetChild(0).GetComponent<Renderer>().material.color = color1;
+            else if (colorNumber == 2)
+                GarageManager.Instance.vehicle4.transform.GetChild(0).GetComponent<Renderer>().material.color = color2;
+            else if (colorNumber == 3)
+                GarageManager.Instance.vehicle4.transform.GetChild(0).GetComponent<Renderer>().material.color = color3;
+            else if (colorNumber == 4)
+                GarageManager.Instance.vehicle4.transform.GetChild(0).GetComponent<Renderer>().material.color = color4;
+            else if (colorNumber == 5)
+                GarageManager.Instance.vehicle4.transform.GetChild(0).GetComponent<Renderer>().material.color = color5;
+        }
+    }
+
     #endregion
 
 
@@ -274,6 +391,8 @@ public class GarageScreenHandler : MonoBehaviour
 
     public void DisplayErrorMessage(string message)
     {
+        CancelInvoke();
+        messagePanel.SetActive(false);
         messagePanel.SetActive(true);
         messageIcon.GetComponent<Image>().sprite = errorSprite;
         messageText.text = message;
@@ -282,6 +401,8 @@ public class GarageScreenHandler : MonoBehaviour
 
     public void DisplaySuccessMessage(string message)
     {
+        CancelInvoke();
+        messagePanel.SetActive(false);
         messagePanel.SetActive(true);
         messageIcon.GetComponent<Image>().sprite = successSprite;
         messageText.text = message;

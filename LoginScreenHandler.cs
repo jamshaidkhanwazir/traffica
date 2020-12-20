@@ -164,12 +164,25 @@ public class LoginScreenHandler : MonoBehaviour
         {
             UIManager.Instance.ActivateScreen(GameScreens.LoadingScreen);
 
+            PreferenceManager.Username = null;
+            PreferenceManager.LevelNumber = 1;
+            PreferenceManager.Coins = 500;
+            PreferenceManager.Email = null;
+            PreferenceManager.VehicleSelected = Vehicle.Vehicle1.ToString();
+            PreferenceManager.Vehicle2 = State.Locked.ToString();
+            PreferenceManager.Vehicle3 = State.Locked.ToString();
+            PreferenceManager.Vehicle4 = State.Locked.ToString();
+
             User user = new User()
             {
                 username = usernameRegistrationInputField.text,
                 levelNumber = PreferenceManager.LevelNumber,
+                coins = PreferenceManager.Coins,
                 email = emailRegistrationInputField.text,
-                password = passwordRegistrationInputField.text
+                password = passwordRegistrationInputField.text,
+                vehicle2 = PreferenceManager.Vehicle2,
+                vehicle3 = PreferenceManager.Vehicle3,
+                vehicle4 = PreferenceManager.Vehicle4
             };
 
             FirebaseManager.Instance.RegisterUser(user, OnRegistrationComplete);
