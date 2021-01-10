@@ -1,9 +1,25 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LevelPassedScreenHandler : MonoBehaviour
 {
+    [Header("Level Passed Screen")]
+    public GameObject nextLevelButton;
+
+    [Header("Message")]
+    public GameObject messagePanel;
+    public Text messageText;
+
+    private void OnEnable()
+    {
+        if (PreferenceManager.LevelSelected == 12)
+            nextLevelButton.SetActive(false);
+        else
+            nextLevelButton.SetActive(true);
+    }
+
     public void OnHomeButtonClick()
     {
         Time.timeScale = 1;
@@ -51,4 +67,23 @@ public class LevelPassedScreenHandler : MonoBehaviour
         UIManager.Instance.DeActivateScreen(GameScreens.LoadingScreen);
         UIManager.Instance.ActivateSpecificScreen(GameScreens.GamePlayScreen);
     }
+
+
+
+
+    #region Message
+
+    public void DisplaySuccessMessage(string message)
+    {
+        messagePanel.SetActive(true);
+        messageText.text = message;
+        Invoke(nameof(HideMessage), 4f);
+    }
+
+    public void HideMessage()
+    {
+        messagePanel.SetActive(false);
+    }
+
+    #endregion
 }
