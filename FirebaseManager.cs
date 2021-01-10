@@ -189,7 +189,7 @@ public class FirebaseManager : MonoBehaviour
         else
         {
             flag = true;
-            user = new User
+            user = new User()
             {
                 username = firebaseuser["username"].ToString(),
                 levelNumber = Convert.ToInt32(firebaseuser["levelNumber"].ToString()),

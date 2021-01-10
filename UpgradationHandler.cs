@@ -24,7 +24,14 @@ public class UpgradationHandler : MonoBehaviour
 
         slider.value = PlayerPrefs.GetFloat(GenerateName());
 
-        if (Vehicle2)
+        if (Vehicle1)
+        {
+            if (slider.value == 1)
+                gameObject.SetActive(false);
+            else
+                gameObject.SetActive(true);
+        }
+        else if (Vehicle2)
         {
             if (PreferenceManager.Vehicle2 == State.Locked.ToString())
             {
