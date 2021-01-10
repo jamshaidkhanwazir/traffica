@@ -6,14 +6,20 @@ public class MainScreenHandler : MonoBehaviour
     [Header("HUD")]
     public GameObject profileButton;
     public GameObject loginButton;
+    public Text coinsText;
+    public Text levelNumberText;
 
     private void OnEnable()
     {
+        GameManager.Instance.playingGame = false;
         SetHUD();
     }
 
     public void SetHUD()
     {
+        coinsText.text = PreferenceManager.Coins.ToString();
+        levelNumberText.text = "Level : " + PreferenceManager.LevelNumber.ToString();
+
         if (string.IsNullOrEmpty(PreferenceManager.Username))
         {
             profileButton.SetActive(false);
