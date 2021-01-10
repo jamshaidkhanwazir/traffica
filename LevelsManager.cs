@@ -5,6 +5,7 @@ public class Level
 {
     public string levelName;
     public int levelTime;
+    public int levelWinningAmount;
     public GameObject levelEnvironment;
     public TrafficLightHandler trafficLightHandler;
     public Transform vehicleInitialPosition;
@@ -29,6 +30,7 @@ public class LevelsManager : MonoBehaviour
     public Color color5;
 
     [Header("Levels")]
+    public GameObject freeModeEnvironment;
     public Level[] levels;
 
     public static LevelsManager _instance;
@@ -52,7 +54,16 @@ public class LevelsManager : MonoBehaviour
         for (int i = 0; i < levels.Length; i++)
             levels[i].levelEnvironment.SetActive(false);
 
-        levels[PreferenceManager.LevelSelected - 1].levelEnvironment.SetActive(true);
+        if (PreferenceManager.LevelSelected == 0)
+        {
+            freeModeEnvironment.SetActive(true);
+        }
+        else 
+        {
+            freeModeEnvironment.SetActive(false);
+            levels[PreferenceManager.LevelSelected - 1].levelEnvironment.SetActive(true);
+        }
+        
 
         vehicle1.SetActive(false);
         vehicle2.SetActive(false);
@@ -66,8 +77,17 @@ public class LevelsManager : MonoBehaviour
             vehicle1.SetActive(true);
             DisplayColor(PreferenceManager.Vehicle1Color);
             vehicle1.GetComponent<RCCCarControllerV2>().enabled = false;
-            vehicle1.transform.position = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.position;
-            vehicle1.transform.eulerAngles = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.eulerAngles;
+
+            if (PreferenceManager.LevelSelected == 0)
+            {
+                vehicle1.transform.position = levels[1].vehicleInitialPosition.position;
+                vehicle1.transform.eulerAngles = levels[1].vehicleInitialPosition.eulerAngles;
+            }
+            else
+            {
+                vehicle1.transform.position = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.position;
+                vehicle1.transform.eulerAngles = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.eulerAngles;
+            }
         }
         else if (PreferenceManager.VehicleSelected == Vehicle.Vehicle2.ToString())
         {
@@ -76,8 +96,17 @@ public class LevelsManager : MonoBehaviour
             vehicle2.SetActive(true);
             DisplayColor(PreferenceManager.Vehicle2Color);
             vehicle2.GetComponent<RCCCarControllerV2>().enabled = false;
-            vehicle2.transform.position = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.position;
-            vehicle2.transform.eulerAngles = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.eulerAngles;
+
+            if (PreferenceManager.LevelSelected == 0)
+            {
+                vehicle2.transform.position = levels[1].vehicleInitialPosition.position;
+                vehicle2.transform.eulerAngles = levels[1].vehicleInitialPosition.eulerAngles;
+            }
+            else
+            {
+                vehicle2.transform.position = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.position;
+                vehicle2.transform.eulerAngles = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.eulerAngles;
+            }
         }
         else if (PreferenceManager.VehicleSelected == Vehicle.Vehicle3.ToString())
         {
@@ -86,8 +115,17 @@ public class LevelsManager : MonoBehaviour
             vehicle3.SetActive(true);
             DisplayColor(PreferenceManager.Vehicle3Color);
             vehicle3.GetComponent<RCCCarControllerV2>().enabled = false;
-            vehicle3.transform.position = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.position;
-            vehicle3.transform.eulerAngles = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.eulerAngles;
+
+            if (PreferenceManager.LevelSelected == 0)
+            {
+                vehicle3.transform.position = levels[1].vehicleInitialPosition.position;
+                vehicle3.transform.eulerAngles = levels[1].vehicleInitialPosition.eulerAngles;
+            }
+            else
+            {
+                vehicle3.transform.position = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.position;
+                vehicle3.transform.eulerAngles = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.eulerAngles;
+            }
         }
         else if (PreferenceManager.VehicleSelected == Vehicle.Vehicle4.ToString())
         {
@@ -96,8 +134,17 @@ public class LevelsManager : MonoBehaviour
             vehicle4.SetActive(true);
             DisplayColor(PreferenceManager.Vehicle4Color);
             vehicle4.GetComponent<RCCCarControllerV2>().enabled = false;
-            vehicle4.transform.position = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.position;
-            vehicle4.transform.eulerAngles = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.eulerAngles;
+
+            if (PreferenceManager.LevelSelected == 0)
+            {
+                vehicle4.transform.position = levels[1].vehicleInitialPosition.position;
+                vehicle4.transform.eulerAngles = levels[1].vehicleInitialPosition.eulerAngles;
+            }
+            else
+            {
+                vehicle4.transform.position = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.position;
+                vehicle4.transform.eulerAngles = levels[PreferenceManager.LevelSelected - 1].vehicleInitialPosition.eulerAngles;
+            }
         }
     }
 
